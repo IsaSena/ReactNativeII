@@ -1,7 +1,7 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import theme from './src/global/styles/theme'
-import { Dashboard } from './src/screens/Dashboard'; //por padrao ja vai pro index
+import { CategorySelect } from './src/screens/CategorySelect'; //por padrao ja vai pro index
 
 import AppLoading from 'expo-app-loading'
 import {
@@ -24,7 +24,7 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Dashboard />
+      <CategorySelect />
     </ThemeProvider>
   )
 }
