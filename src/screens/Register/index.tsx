@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import { Modal, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 import { useForm } from 'react-hook-form';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup'
 import { 
     Container,
     Header,
@@ -21,6 +23,15 @@ interface FormData {
     amount: string;
 }
 
+const schema = Yup.object().shape({
+    name: Yup.string().required('O nome é obrigatório'),
+    amount: Yup
+    .number()
+    .typeError('Informe um valor numérico')
+    .positive('O valor não pode ser negativo')
+    .required('O valor é obrigatório')
+})
+
 export function Register(){
     const [category, setCategory] = useState({
         key: 'category',
@@ -29,8 +40,11 @@ export function Register(){
 
     const{
         control, /*registra os inputs*/
-        handleSubmit /*pega os valores de todos os inputs e envia 1 vez só*/
-    } = useForm()
+        handleSubmit, /*pega os valores de todos os inputs e envia 1 vez só*/
+        formState:{ errors }
+    } = useForm({
+        resolver : yupResolver(schema)/*faz com que o form siga um padrao criado*/
+    })
     
     const [transactionType, setTransactionType] = useState('');
     const [categoryModalOpen, setCategoryModalOpen] = useState(false);
@@ -75,12 +89,14 @@ export function Register(){
                         placeholder='Nome'
                         autoCapitalize='sentences' /*deixa só a primeira letar maiuscula de cada palavra*/
                         autoCorrect={false}
+                        error={errors.name && errors.name.message}
                     />
                     <InputForm
                         name="amount"
                         control={control}
                         placeholder='Preço' 
                         keyboardType='numeric'
+                        error={errors.amount && errors.amount.message}
                     />
 
                     <TransactionTypes>
