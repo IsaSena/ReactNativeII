@@ -9,17 +9,13 @@ import {
     CategoryName,
     Date
     } from './style'
-
-interface Category{
-    name: string;
-    icon: string;
-}
+import { categories } from '../../utils/categories';
 
 export interface TransactionCardProps{
-    type: 'postive' | 'negative';
-    title: string;
+    type: 'positive' | 'negative';
+    name: string;
     amount: string;
-    category: Category;
+    category: string;
     date: string;
 }
 
@@ -28,10 +24,13 @@ export interface TransactionCardProps{
  }
 
 export function TransactionCard({ data } : Props) {
+    const [ category ] = categories.filter( /*nomeia a primeira posição*/
+        item => item.key === data.category
+    ); /*ou colocar o vetor aqui em baixo e tirar lá de cima*/
     return (
         <Container>
             <Title>
-                {data.title}
+                {data.name}
             </Title>
 
             <Amount type={data.type}>
@@ -41,9 +40,9 @@ export function TransactionCard({ data } : Props) {
 
             <Footer>
                 <Category>
-                    <Icon name={data.category.icon}/>
+                    <Icon name={category.icon}/>
                     <CategoryName>
-                        {data.category.name}
+                        {category.name}
                     </CategoryName>
                 </Category>
 

@@ -7,7 +7,7 @@ import { Control, Controller } from 'react-hook-form';
 interface Props extends TextInputProps {
     control: Control;
     name: string;
-    error: string;
+    error: any;
 }
 
 export function InputForm({
