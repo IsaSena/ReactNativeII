@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { 
     Container,
@@ -9,7 +9,9 @@ import {
     MonthSelect,
     MonthSelectButton,
     MonthSelectIcon,
-    Month
+    Month,
+    LoadContainer,
+    ActivityIndicator
 
 } from './styles'
 import { HistoryCard } from '../../components/HistoryCard';
@@ -20,6 +22,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useTheme } from 'styled-components';
 import { addMonths, subMonths, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale'
+import { useFocusEffect } from '@react-navigation/native';
 
 interface TransactionData{
     type: 'positive' | 'negative';
@@ -39,6 +42,7 @@ interface CategoryData{
 }
 
 export function Resume(){
+    const [isLoading, setIsLoading] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [totalByCategories, setTotalByCategories] = useState<CategoryData[]>([]);
 
@@ -53,6 +57,7 @@ export function Resume(){
     }
 
     async function loadData() {
+        setIsLoading(true);
         const dataKey  = '@gofinance:transaction'; /*aplicação:coleção*/
         const response = await AsyncStorage.getItem(dataKey); /*recupera os dados do async*/
         const responseFormatted = response ? JSON.parse(response) : []; /*se tem algo já devolve convertido*/
@@ -100,17 +105,31 @@ export function Resume(){
             }
         });
         setTotalByCategories(totalByCategory);
+        setIsLoading(false);
     }
 
-    useEffect (() => {
+    // useEffect (() => {
+    //     loadData();
+    // },[selectedDate]);
+
+    useFocusEffect(useCallback(() =>{ /*Volta pra listagem e atualiza a listagem*/
         loadData();
-    },[selectedDate]);
+    }, [selectedDate])); /*faz o gráfico atualizar toda vez que tem uma nova transação*/
 
     return(
         <Container>
             <Header>
                 <Title> Resumo por categoria </Title>
             </Header>
+
+            {
+            isLoading ?
+            <LoadContainer>
+                <ActivityIndicator
+                color= {theme.colors.primary}
+                size="large"
+                />
+            </LoadContainer> :
 
             <Content
             showsVerticalScrollIndicator={false}
@@ -160,7 +179,7 @@ export function Resume(){
                     ))
                 }
             </Content>
-
+        }
         </Container>
     )
 }

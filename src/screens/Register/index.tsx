@@ -32,7 +32,7 @@ const schema = Yup.object().shape({
     .typeError('Informe um valor numérico')
     .positive('O valor não pode ser negativo')
     .required('O valor é obrigatório')
-})
+});
 
 type NavigationProps = {
     navigate: (screen: string) => void;
