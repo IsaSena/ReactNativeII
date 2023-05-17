@@ -19,6 +19,7 @@ import { Button } from '../../components/Form/Button';
 import { TransactionTypeButton } from '../../components/Form/TransactionTypeButton';
 import { CategorySelectButton } from '../../components/Form/CategorySelectButton';
 import { CategorySelect } from '../CategorySelect'
+import { useAuth } from '../../hooks/auth';
 
 interface FormData {
     name?: string;
@@ -56,6 +57,8 @@ export function Register(){
     
     const [transactionType, setTransactionType] = useState('');
     const [categoryModalOpen, setCategoryModalOpen] = useState(false);
+    
+    const { user } = useAuth();
 
     function handleTransactionTypeSelect(type: 'positive' | 'negative'){
         setTransactionType(type);
@@ -86,7 +89,7 @@ export function Register(){
         }
 
         try{ /*o await aguarda ele terminar de salvar os dados, por isso async*/
-            const dataKey  = '@gofinance:transaction'; /*aplicação:coleção*/
+            const dataKey  = `@gofinance:transaction`; /*aplicação:coleção  // o user deveria ser com id pra puxar só dele*/ 
             const data = await AsyncStorage.getItem(dataKey); /*recupera os dados do async*/
             const currentData = data ? JSON.parse(data) : []; /*se tem algo já devolve convertido*/
 

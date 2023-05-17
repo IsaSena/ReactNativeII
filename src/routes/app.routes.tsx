@@ -1,3 +1,4 @@
+//rota autenticada
 import React from 'react';
 import Plataform from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons'
